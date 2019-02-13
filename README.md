@@ -1,4 +1,4 @@
-# Battleship
+# Battleship game by Yangsoo Song / Kevin Sun
 
 To start your Phoenix server:
 
