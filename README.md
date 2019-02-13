@@ -1,3 +1,7 @@
+Battleship project for Yangsoo Song / Kevin Sun
+
+
+
 # Battleship
 
 To start your Phoenix server:
