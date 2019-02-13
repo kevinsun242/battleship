@@ -1,8 +1,4 @@
-Battleship project for Yangsoo Song / Kevin Sun
-
-
-
-# Battleship
+# Battleship game by Yangsoo Song / Kevin Sun
 
 To start your Phoenix server:
 
