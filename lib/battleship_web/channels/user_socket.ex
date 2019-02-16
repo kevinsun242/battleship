@@ -2,7 +2,8 @@ defmodule BattleshipWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", BattleshipWeb.RoomChannel
+  # channel "room:*", HangmanWeb.RoomChannel
+  channel "games:*", BattleshipWeb.RoomChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -15,10 +16,16 @@ defmodule BattleshipWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket, _connect_info) do
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _connect_info) do
+    # max_age: 1209600 is equivalent to two weeks in seconds
+    case Phoenix.Token.verify(socket, "user socket", token, max_age: 1209600) do
+      {:ok, user} ->
+        IO.puts("socket connect from user = #{user}")
+        {:ok, assign(socket, :user, user)}
+      {:error, _reason} ->
+        :error
+    end
   end
-
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
   #     def id(socket), do: "user_socket:#{socket.assigns.user_id}"
@@ -29,5 +36,6 @@ defmodule BattleshipWeb.UserSocket do
   #     BattleshipWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
+
   def id(_socket), do: nil
 end
