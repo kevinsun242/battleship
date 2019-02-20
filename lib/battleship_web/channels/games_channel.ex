@@ -2,6 +2,8 @@ defmodule BattleshipWeb.GamesChannel do
   use BattleshipWeb, :channel
 
   alias Battleship.GameServer
+  alias Battleship.Game
+  alias Battleship.BackupAgent
 
   def join("games:" <> game, payload, socket) do
     if authorized?(payload) do
@@ -12,7 +14,6 @@ defmodule BattleshipWeb.GamesChannel do
       {:error, %{reason: "unauthorized"}}
     end
   end
-
  
   # Add authorization logic here as required.
   defp authorized?(_payload) do
