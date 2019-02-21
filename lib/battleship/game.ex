@@ -33,7 +33,7 @@ defmodule Battleship.Game do
 
   # https://stackoverflow.com/questions/51342981/how-to-print-a-grid-from-coordinates-like-0-0-in-a-mapset-in-elixir
   def new_board do
-    board = for col <- 1..10, row <- 1..10, into: %{}, do: {{col, row}, %{ship: false, guessed: false,}}
+    board = for col <- 1..10, row <- 1..10, into: [], do: %{column: col, row: row, ship: false, guessed: false,}
 
     board
   end
@@ -47,8 +47,8 @@ defmodule Battleship.Game do
 
     %{
       boards: boards,
-      player_board: Enum.at(boards, 0),
-      opponent_board: Enum.at(boards, 1),
+      player_board: skeleton(Enum.at(boards, 0)),
+      opponent_board: skeleton(Enum.at(boards, 1)),
       score: 0,
       players: ps,      
     }
@@ -56,16 +56,16 @@ defmodule Battleship.Game do
   end
 
   def skeleton(board) do 
-    board_symbols = for col <- 1..10, row <- 1..10, into: %{}, do:
-      {cond do 
-        Map.get(board[{col, row}], :guessed) && Map.get(board[{col, row}], :ship) ->
-          {{col, row}, %{symbol: "X",}}
-        Map.get(board[{col, row}], :guessed) && !Map.get(board[{col, row}], :ship) ->
-          {{col, row}, %{symbol: "O",}}
+    Enum.map board, fn square ->
+      cond do 
+        Map.get(square, :guessed) && Map.get(square, :ship) ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: "X",}
+        Map.get(square, :guessed) && !Map.get(square, :ship) ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: "O",}
         true ->
-          {{col, row}, %{symbol: " ",}}
-      end}
-    board_symbols
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: " ",}
+      end
+    end
   end
 
 end

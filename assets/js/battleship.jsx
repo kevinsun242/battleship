@@ -11,16 +11,22 @@ class Battleship extends React.Component {
   constructor(props) {
     super(props);
 
-     this.channel = props.channel;
-     this.state = {
-        boards: [],
-        player_board: [],
-        opponent_board: [],
-        score: 0,
-        players: []
-     };
-     this.cahnnel
-     .join()
+    this.channel = props.channel;
+    this.state = {
+      boards: [],
+      player_board: [],
+      opponent_board: [],
+      score: 0,
+      players: []
+    };
+    this.channel.join()
+      .receive("ok", this.gotView.bind(this))
+      .receive("error", resp => { console.log("Unable to join", resp) });
+  }
+  
+  gotView(view) {
+    console.log("new view", view);
+    this.setState(view.game);
   }
 
   render() {
