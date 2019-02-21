@@ -14,17 +14,33 @@ class Battleship extends React.Component {
      this.channel = props.channel;
      this.state = {
         boards: [],
+        player_board: [],
+        opponent_board: [],
+        score: 0,
+        players: []
      };
      this.cahnnel
      .join()
   }
 
   render() {
+    console.log("render");
+
+    let squares = _.map(this.state.player_board, (square) => {
+      return <SquareItem square={square}/>
+    });
+
     return <div>
       <h1>ToDo</h1>
+      <div className="Board">{squares}</div>
     </div>
   }
 
+}
+
+function SquareItem(props) {
+  let square = props.square;
+  return <button className="Square">Test</button>
 }
 
 function DisplayTile(props) {

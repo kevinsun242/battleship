@@ -5,7 +5,8 @@ defmodule Battleship.Game do
     board2 = new_board()
 
     %{
-      board: %{board, player,}
+      board1: board1,
+      board2: board2,
       players: %{},
     }
   end
@@ -38,7 +39,33 @@ defmodule Battleship.Game do
   end
 
   def client_view(game, user) do
+    ps = Enum.map game.players, fn {pn, pi} ->
+      %{ name: pn, score: pi.score }
+    end
+    boards = [%{board: game.board1, player: Enum.at(game.players, 0)},
+              %{board: game.board2, player: Enum.at(game.players, 1)}]
 
+    %{
+      boards: boards,
+      player_board: Enum.at(boards, 0),
+      opponent_board: Enum.at(boards, 1),
+      score: 0,
+      players: ps,      
+    }
+
+  end
+
+  def skeleton(board) do 
+    board_symbols = for col <- 1..10, row <- 1..10, into: %{}, do:
+      {cond do 
+        Map.get(board[{col, row}], :guessed) && Map.get(board[{col, row}], :ship) ->
+          {{col, row}, %{symbol: "X",}}
+        Map.get(board[{col, row}], :guessed) && !Map.get(board[{col, row}], :ship) ->
+          {{col, row}, %{symbol: "O",}}
+        true ->
+          {{col, row}, %{symbol: " ",}}
+      end}
+    board_symbols
   end
 
 end
