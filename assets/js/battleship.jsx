@@ -31,11 +31,16 @@ class Battleship extends React.Component {
     this.setState(view.game);
   }
 
+  sendGuess(ev) {
+    this.channel.push("guess", {row: ev.row, column: ev.column})
+      .receive("ok", this.gotView.bind(this));
+  }
+
   render() {
     console.log("render");
 
     let squares = _.map(this.state.player_board, (square) => {
-      return <SquareItem square={square}/>
+      return <SquareItem square={square} sendGuess={this.sendGuess.bind(this)}/>
     });
 
     return <div>

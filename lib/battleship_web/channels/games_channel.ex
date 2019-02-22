@@ -17,6 +17,12 @@ defmodule BattleshipWeb.GamesChannel do
     end
   end
 
+  def handle_in("guess", %{"row" => row, "column" => column}, socket) do
+    view = GameServer.guess(socket.assigns[:game], socket.assigns[:user], row, column)
+    push_update! view, socket
+    {:reply, {:ok, %{ "game" => view}}, socket}
+  end
+
   def handle_out("update", game_data, socket) do
     IO.inspect("Broadcasting update to #{socket.assigns[:user]}")
     push socket, "update", %{ "game" => game_data }

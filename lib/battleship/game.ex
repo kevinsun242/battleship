@@ -33,7 +33,7 @@ defmodule Battleship.Game do
 
   # https://stackoverflow.com/questions/51342981/how-to-print-a-grid-from-coordinates-like-0-0-in-a-mapset-in-elixir
   def new_board do
-    board = for col <- 1..10, row <- 1..10, into: [], do: %{column: col, row: row, ship: false, guessed: false,}
+    board = for row <- 1..10, col <- 1..10, into: [], do: %{column: col, row: row, ship: false, guessed: false,}
 
     add_ships(board)
   end
@@ -43,9 +43,19 @@ defmodule Battleship.Game do
     column = Enum.random(1..6)
     row = Enum.random(1..10)
 
-    Map 
-    
-    board
+    newboard = Enum.map(board, fn (x) -> 
+      if Map.get(x, :row) == row && (Map.get(x, :column) == column ||
+                                    Map.get(x, :column) == (column + 1) ||
+                                    Map.get(x, :column) == (column + 2) ||
+                                    Map.get(x, :column) == (column + 3) ||
+                                    Map.get(x, :column) == (column + 4)) do
+        %{column: Map.get(x, :column), row: Map.get(x, :row), ship: true, guessed: false,}
+      else
+        x
+      end
+    end
+    )
+    newboard
   end
 
   def client_view(game, user) do
@@ -91,6 +101,33 @@ defmodule Battleship.Game do
           %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: " ",}
       end
     end
+  end
+
+  def guess(game, player, row, column) do
+    board1 = game.board1
+    board2 = game.board2
+    score = game.score
+
+    newboard = Enum.map(board1, fn (x) ->
+      if Map.get(x, :row) == row && Map.get(x, :column) == column do
+        Map.put(x, :guessed, true)
+      else
+        x
+      end
+    end)
+
+    newboards = [%{board: newboard, player: Enum.at(game.players, 0)},
+      %{board: board2, player: Enum.at(game.players, 1)}]
+
+    pinfo = Map.get(game, player, default_player())
+    |> Map.put(:cooldown, :os.system_time(:milli_seconds) + 10_000)
+
+    game
+    |> Map.put(game, :boards, newboards)
+    |> Map.put(game, :player_board, skeleton_own(newboard))
+    |> Map.put(game, :opponent_board, skeleton_own(board2))
+    |> Map.put(game, :score, score)
+    |> Map.update(:players, %{}, &(Map.put(&1, player, pinfo)))
   end
 
 end

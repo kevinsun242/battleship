@@ -12,6 +12,9 @@ defmodule Battleship.GameServer do
     GenServer.call(__MODULE__, {:view, game, user})
   end
 
+  def guess(game, user, row, column) do
+    GenServer.call(__MODULE__, {:guess, game, user, row, column})
+  end
 
   ## Implementations
   def init(state) do
