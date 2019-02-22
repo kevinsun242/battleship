@@ -111,7 +111,7 @@ defmodule Battleship.Game do
     newboard = Enum.map(board1, fn (x) ->
       if Map.get(x, :row) == row && Map.get(x, :column) == column do
         Map.put(x, :guessed, true)
-      else
+      else 
         x
       end
     end)
