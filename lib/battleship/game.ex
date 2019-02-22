@@ -35,6 +35,16 @@ defmodule Battleship.Game do
   def new_board do
     board = for col <- 1..10, row <- 1..10, into: [], do: %{column: col, row: row, ship: false, guessed: false,}
 
+    add_ships(board)
+  end
+
+  def add_ships(board) do
+    usedrows = []
+    column = Enum.random(1..6)
+    row = Enum.random(1..10)
+
+    Map 
+    
     board
   end
 
@@ -47,15 +57,30 @@ defmodule Battleship.Game do
 
     %{
       boards: boards,
-      player_board: skeleton(Enum.at(boards, 0)),
-      opponent_board: skeleton(Enum.at(boards, 1)),
+      player_board: skeleton_own(Map.get(Enum.at(boards, 0), :board)),
+      opponent_board: skeleton_opponent(Map.get(Enum.at(boards, 1), :board)),
       score: 0,
       players: ps,      
     }
 
   end
 
-  def skeleton(board) do 
+  def skeleton_own(board) do 
+    Enum.map board, fn square ->
+      cond do 
+        Map.get(square, :guessed) && Map.get(square, :ship) ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: "X",}
+        Map.get(square, :guessed) && !Map.get(square, :ship) ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: "O",}
+        !Map.get(square, :guessed) && Map.get(square, :ship) ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: "S",}
+        true ->
+          %{column: Map.get(square, :column), row: Map.get(square, :row), symbol: " ",}
+      end
+    end
+  end
+
+  def skeleton_opponent(board) do 
     Enum.map board, fn square ->
       cond do 
         Map.get(square, :guessed) && Map.get(square, :ship) ->

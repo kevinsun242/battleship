@@ -22,6 +22,8 @@ class Battleship extends React.Component {
     this.channel.join()
       .receive("ok", this.gotView.bind(this))
       .receive("error", resp => { console.log("Unable to join", resp) });
+
+    this.channel.on("update", this.gotView.bind(this))
   }
   
   gotView(view) {
@@ -38,7 +40,7 @@ class Battleship extends React.Component {
 
     return <div>
       <h1>ToDo</h1>
-      <div className="Board">{squares}</div>
+      <div className="Board1">{squares}</div>
     </div>
   }
 
@@ -46,7 +48,7 @@ class Battleship extends React.Component {
 
 function SquareItem(props) {
   let square = props.square;
-  return <button className="Square">Test</button>
+  return <button className="Square">{square.symbol}</button>
 }
 
 function DisplayTile(props) {

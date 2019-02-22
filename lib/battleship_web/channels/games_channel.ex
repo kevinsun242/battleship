@@ -5,6 +5,8 @@ defmodule BattleshipWeb.GamesChannel do
   alias Battleship.Game
   alias Battleship.BackupAgent
 
+  intercept ["update"]
+
   def join("games:" <> game, payload, socket) do
     if authorized?(payload) do
       socket = assign(socket, :game, game)
@@ -13,6 +15,16 @@ defmodule BattleshipWeb.GamesChannel do
     else
       {:error, %{reason: "unauthorized"}}
     end
+  end
+
+  def handle_out("update", game_data, socket) do
+    IO.inspect("Broadcasting update to #{socket.assigns[:user]}")
+    push socket, "update", %{ "game" => game_data }
+    {:noreply, socket}
+  end
+
+  defp push_update!(view, socket) do
+    broadcast!(socket, "update", view)
   end
  
   # Add authorization logic here as required.
